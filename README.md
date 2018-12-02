@@ -19,11 +19,13 @@ start service with vagrant up
 ```
 vagrant up
 ```
-if you change something in the playbook, run
+If you change something in the playbook, run
 ```
 vagrant up --provision
 ```
-to start the virtual machines with the new playbook
+to start the virtual machines with the new playbook.
+
+Enter the URL of the load balancer in your browser (default URL is http://192.168.100.10).
 
 # Stop Service
 Stop the service with
@@ -32,7 +34,7 @@ vagrant suspend
 ```
 
 # Changes while Service is running
-if the playbook changes while the virtual machines are running, run
+If the playbook changes while the virtual machines are running, run
 ```
 vagrant provision
 ```
@@ -42,3 +44,8 @@ Destroy all virtual machines with
 ```
 vagrant destroy
 ```
+
+# Default IP addresses
+The default main (load balancer) IP address is 192.168.100.10.
+The default IP addresses of the database server is 192.168.100.11.
+The default IP addresses of the web servers starts at 192.168.100.20.
