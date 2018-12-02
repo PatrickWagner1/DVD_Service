@@ -1,0 +1,139 @@
+---
+- hosts: db
+  become: true
+
+  tasks:
+
+    - name: postgresql ist installiert
+      apt:
+        name: "{{ packages }}"
+        update_cache: yes
+      vars:
+        packages:
+          - postgresql
+          - libpq-dev
+          - python-psycopg2
+
+    - name: postgresql Konfiguration ist aktuell
+      lineinfile:
+        path: /etc/postgresql/10/main/postgresql.conf
+        regexp: "listen_addresses"
+        line: "listen_addresses = '*'"
+      notify: postgresql-Konfiguration geändert
+
+    - name: postgresql hba Konfiguration ist aktuell
+      lineinfile:
+        path: /etc/postgresql/10/main/pg_hba.conf
+        insertafter: "^# IPv4 local connections"
+        line: "host    all             all             192.168.100.0/24        md5"
+      notify: postgresql-Konfiguration geändert
+
+    - name: Datenbank-Service läuft
+      service:
+        name: postgresql
+        state: started
+        enabled: yes
+
+    - name: Datenbank ist eingerichtet
+      become: true
+      become_user: postgres
+      postgresql_db:
+        name: dvd_db
+        encoding: UTF-8
+        state: present
+        login_user: postgres
+
+    - name: Daten wurden hinzugefügt
+      become_user: postgres
+      shell: psql dvd_db < etc/dvd_db.sql
+
+  handlers:
+    - name: postgresql-Konfiguration geändert
+      service:
+        name: postgresql
+        state: restarted
+
+- hosts: web*
+  become: true
+
+  tasks:
+    - name: Web Server ist installiert
+      apt:
+        name: nginx
+        update_cache: yes
+
+    - name: Konfiguration des Web Servers ist aktuell
+      copy:
+        src: etc/sites-available-default.conf
+        dest: /etc/nginx/sites-available/default
+      notify:
+        - Webserver-Konfiguration geändert
+
+    - name: Document root ist vorhanden
+      copy:
+        src: html/
+        dest: /usr/share/nginx/html/
+
+    - name: Web Server läuft und wird beim Booten gestartet
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: PHP ist installiert
+      apt:
+        name: "{{ packages }}"
+        update_cache: yes
+      vars:
+        packages:
+          - php7.2-fpm
+          - php7.2-pgsql
+
+    - name: PHP-FPM läuft und wird beim booten gestartet
+      service:
+        name: php7.2-fpm
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Webserver-Konfiguration geändert
+      service:
+        name: nginx
+        state: restarted
+
+- hosts: lb
+  become: true
+
+  tasks:
+    - name: Web Server ist installiert
+      apt:
+        name: nginx
+        update_cache: yes
+
+    - name: Konfiguration ist aktuell
+      copy:
+        src: etc/load_balancer.conf
+        dest: /etc/nginx/conf.d/load_balancer.conf
+      notify:
+        - Webserver-Konfiguration geändert
+
+    - name: Standard Seiten laden ausgestellt
+      file:
+        path: "/etc/nginx/{{ item }}"
+        state: absent
+      with_items:
+        - sites-enabled
+        - sites-available
+
+    - name: Web Server läuft und wird beim Booten gestartet
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Webserver-Konfiguration geändert
+      service:
+        name: nginx
+        state: restarted
+
