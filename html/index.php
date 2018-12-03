@@ -14,7 +14,6 @@ if(!empty($_GET['filter'])){
 }else{
 	$filter = "";
 }
-//$filter = " WHERE Film.title LIKE '%Star Wars" . $_GET['search'] . "%'";
 
 
 ?>
