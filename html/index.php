@@ -11,8 +11,10 @@ if(!empty($_GET['sortby'])){
 
 if(!empty($_GET['filter'])){
 	$filter = " WHERE Film.title LIKE '%" . $_GET['filter'] . "%'";
+	$uri_query = "filter=" . $_GET['filter'] . "&";
 }else{
 	$filter = "";
+	$uri_query = "";
 }
 
 
@@ -20,24 +22,36 @@ if(!empty($_GET['filter'])){
 
 
 <head>
-	<title>DVD Verleih</title>	
+	<title>DVD Verleih</title>
+
+	<style>
+		table, th, td {
+    			border: 1px solid black;
+    			border-collapse: collapse;
+		}
+		table {
+			width: 100%;
+		}
+	</style>
 </head>
-			
-				
+
+
 <h1> 1 Nice DVD Verleih </h1>
 <?php
 // Eine SQL-Abfrage ausführen
 $query = 'SELECT inventory_number as invnr, Film.title as title, Category.name as category, DVD.price as price, Wear.name as status FROM Inventory JOIN DVD ON Inventory.id_DVD=DVD.id JOIN DVD_has_Film ON DVD.id=DVD_has_Film.id_DVD JOIN Film ON Film.id = DVD_has_Film.id_Film JOIN Wear ON Wear.id = Inventory.id_Condition JOIN Category ON DVD.id_category = Category.id' . $filter . $sort;
 $result = pg_query($query) or die('Abfrage fehlgeschlagen: ' . pg_last_error());
 
+
+
 // Ergebnisse in HTML ausgeben
 echo "<table>\n";
 
-echo "<th>Inventarnummer <form action='index.php?sortby=invnr' method='POST'><input type='submit' name=invnr value=&uarr;></form></th>\n";
-echo "<th>Titel <form action='index.php?sortby=title' method='POST'><input type='submit' name=title value=&uarr;></form></th>\n";
-echo "<th>Kategorie <form action='index.php?sortby=category' method='POST'><input type='submit' name=category value=&uarr;></form></th>\n";
-echo "<th>Anschaffungspreis <form action='index.php?sortby=price' method='POST'><input type='submit' name=price value=&uarr;></form></th>\n";
-echo "<th>Zustand <form action='index.php?sortby=status' method='POST'><input type='submit' name=status value=&uarr;></form></th>\n";
+echo "<th>Inventarnummer <form action='index.php?" . $uri_query . "sortby=invnr' method='POST'><input type='submit' name=invnr value=&uarr;></form></th>\n";
+echo "<th>Titel <form action='index.php?" . $uri_query . "sortby=title' method='POST'><input type='submit' name=title value=&uarr;></form></th>\n";
+echo "<th>Kategorie <form action='index.php?" . $uri_query . "sortby=category' method='POST'><input type='submit' name=category value=&uarr;></form></th>\n";
+echo "<th>Anschaffungspreis <form action='index.php?" . $uri_query . "sortby=price' method='POST'><input type='submit' name=price value=&uarr;></form></th>\n";
+echo "<th>Zustand <form action='index.php?" . $uri_query . "sortby=status' method='POST'><input type='submit' name=status value=&uarr;></form></th>\n";
 
 while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
     echo "\t<tr>\n";
@@ -49,7 +63,7 @@ while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
 		//echo "<td>$line->category</td>\n";
 		//echo "<td>$line->price</td>\n";
 		//echo "<td>$line->status</td>\n";
-		
+
     }
     echo "\t</tr>\n";
 }
@@ -66,8 +80,12 @@ echo "</table>\n";
 		if(isset($_POST['filter'])){ // Nach dem Druck auf "Suche" folgt die Überpfüfung
 			if(empty($_POST['search'])){ // Feld ausgefüllt?
 				echo "Eingabe ung&uuml;ltig! Bitte Feld ausf&uuml;llen!<br><br>";
-			}else{ 
-				header("Location:index.php?filter=".$_POST['search']);
+			}else{
+				$uri_query = "filter=" . $_POST['search'];
+				if(!empty($sort)){
+					$uri_query .= "&sortby=" . $sort;
+				}
+				header("Location:index.php?" . $uri_query);
 			}
 		}
 
