@@ -16,11 +16,11 @@ CREATE TABLE Category (
 --
 
 INSERT INTO Category (id, name) VALUES
-(0, 'Horror'),
-(1, 'Fantasy'),
-(2, 'Crime'),
-(3, 'Romance'),
-(4, 'Sport');
+(0, 'Standard'),
+(1, 'Collectors Edition'),
+(2, 'Directors Cut'),
+(3, 'Censored Version'),
+(4, 'Extended Edition');
 
 -- --------------------------------------------------------
 
@@ -40,10 +40,14 @@ CREATE TABLE DVD (
 --
 
 INSERT INTO DVD (id, id_category, price, title) VALUES
-(0, 2, 1000, ''),
-(1, 3, 1000, ''),
-(2, 4, 1000, '');
-
+(0, 1, 1.20, ''),
+(1, 2, 50.00, ''),
+(2, 3, 10.00, ''),
+(3, 4, 20.00,''),
+(4, 1, 5.0,''),
+(5, 1, 5.0,''),
+(6, 2, 15.0,''),
+(7, 2, 15.0,'');
 -- --------------------------------------------------------
 
 --
@@ -61,9 +65,16 @@ CREATE TABLE DVD_has_Film (
 
 INSERT INTO DVD_has_Film (id_DVD, id_Film) VALUES
 (0, 0),
-(1, 0),
-(0, 1),
-(0, 2);
+(1, 2),
+(1, 3),
+(1, 4),
+(2, 5),
+(3, 6),
+(4, 7),
+(5, 8),
+(5, 1),
+(6, 9),
+(7, 10);
 
 -- --------------------------------------------------------
 
@@ -111,8 +122,18 @@ CREATE TABLE Inventory (
 --
 
 INSERT INTO Inventory (inventory_number, id_DVD, id_Condition, aviable) VALUES
-(2, 1, 0, 1),
-(3, 0, 0, 1);
+(2, 0, 0, 1),
+(10, 0, 1, 0),
+(11, 0, 2, 0),
+(12, 0, 3, 1),
+(3, 1, 0, 1),
+(4, 2, 0, 0),
+(5, 3, 0, 1),
+(6, 4, 0, 1),
+(13, 4, 4, 1),
+(7, 5, 0, 0),
+(8, 6, 0, 0),
+(9, 7, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -132,6 +153,10 @@ CREATE TABLE Wear (
 INSERT INTO Wear (id, name) VALUES
 (0, 'New'),
 (1, 'Broken');
+(2, 'Minimal wear');
+(3, 'Used');
+(4, 'Heavily used');
+
 
 --
 -- Indizes der exportierten Tabellen
