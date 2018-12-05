@@ -50,7 +50,7 @@ echo "<table>\n";
 echo "<th>Inventarnummer <form action='index.php?" . $uri_query . "sortby=invnr' method='POST'><input type='submit' name=invnr value=&uarr;></form></th>\n";
 echo "<th>Titel <form action='index.php?" . $uri_query . "sortby=title' method='POST'><input type='submit' name=title value=&uarr;></form></th>\n";
 echo "<th>Kategorie <form action='index.php?" . $uri_query . "sortby=category' method='POST'><input type='submit' name=category value=&uarr;></form></th>\n";
-echo "<th>Anschaffungspreis <form action='index.php?" . $uri_query . "sortby=price' method='POST'><input type='submit' name=price value=&uarr;></form></th>\n";
+echo "<th>Anschaffungspreis in €<form action='index.php?" . $uri_query . "sortby=price' method='POST'><input type='submit' name=price value=&uarr;></form></th>\n";
 echo "<th>Zustand <form action='index.php?" . $uri_query . "sortby=status' method='POST'><input type='submit' name=status value=&uarr;></form></th>\n";
 
 while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
