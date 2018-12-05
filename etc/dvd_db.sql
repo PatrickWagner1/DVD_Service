@@ -152,9 +152,9 @@ CREATE TABLE Wear (
 
 INSERT INTO Wear (id, name) VALUES
 (0, 'New'),
-(1, 'Broken');
-(2, 'Minimal wear');
-(3, 'Used');
+(1, 'Broken'),
+(2, 'Minimal wear'),
+(3, 'Used'),
 (4, 'Heavily used');
 
 
